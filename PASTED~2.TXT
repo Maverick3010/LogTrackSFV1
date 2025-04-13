@@ -1,0 +1,3042 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiERP - Sistema de Gestión Logística</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>LogiERP</h1>
+                <button id="toggleMenu" class="toggle-menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a>
+                    </li>
+                    <li>
+                        <a href="#requerimientos"><i class="fas fa-clipboard-list"></i> <span>Requerimientos</span></a>
+                    </li>
+                    <li>
+                        <a href="#ordenes"><i class="fas fa-shopping-cart"></i> <span>Órdenes de Compra</span></a>
+                    </li>
+                    <li>
+                        <a href="#recepcion"><i class="fas fa-truck-loading"></i> <span>Recepción</span></a>
+                    </li>
+                    <li>
+                        <a href="#inventario"><i class="fas fa-boxes"></i> <span>Inventario</span></a>
+                    </li>
+                    <li>
+                        <a href="#salidas"><i class="fas fa-dolly-flatbed"></i> <span>Salidas</span></a>
+                    </li>
+                    <li>
+                        <a href="#proveedores"><i class="fas fa-handshake"></i> <span>Proveedores</span></a>
+                    </li>
+                    <li>
+                        <a href="#contabilidad"><i class="fas fa-calculator"></i> <span>Contabilidad</span></a>
+                    </li>
+                    <li>
+                        <a href="#reportes"><i class="fas fa-chart-line"></i> <span>Reportes</span></a>
+                    </li>
+                    <li>
+                        <a href="#test-runner"><i class="fas fa-vial"></i> <span>Test Runner</span></a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="search-container">
+                    <input type="text" placeholder="Buscar...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="top-actions">
+                    <div class="notifications">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">3</span>
+                        </button>
+                        <div class="notification-dropdown">
+                            <div class="notification-item">
+                                <p>Nueva orden recibida</p>
+                                <span>Hace 5 minutos</span>
+                            </div>
+                            <div class="notification-item">
+                                <p>Stock bajo en producto A123</p>
+                                <span>Hace 2 horas</span>
+                            </div>
+                            <div class="notification-item">
+                                <p>Requerimiento aprobado #8742</p>
+                                <span>Hace 1 día</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-profile">
+                        <button class="profile-btn">
+                            <img src="https://via.placeholder.com/40" alt="Perfil">
+                            <span>Admin</span>
+                        </button>
+                        <div class="profile-dropdown">
+                            <a href="#perfil"><i class="fas fa-user"></i> Mi Perfil</a>
+                            <a href="#configuracion"><i class="fas fa-cog"></i> Configuración</a>
+                            <a href="#logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="content module-content" id="dashboard-content">
+                <h2 class="page-title">Dashboard</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Requerimientos Pendientes</h3>
+                            <p class="stat-value" id="pending-reqs-value">0</p>
+                            <p class="stat-change neutral">Por procesar</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Órdenes Activas</h3>
+                            <p class="stat-value" id="active-orders-value">0</p>
+                            <p class="stat-change neutral">En proceso</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-truck-loading"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Recepciones Programadas</h3>
+                            <p class="stat-value" id="scheduled-receptions-value">0</p>
+                            <p class="stat-change neutral">Próximos 7 días</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-dolly-flatbed"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Salidas Pendientes</h3>
+                            <p class="stat-value" id="pending-outputs-value">0</p>
+                            <p class="stat-change neutral">Por procesar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Grid -->
+                <div class="dashboard-grid">
+                    <!-- Charts Section -->
+                    <div>
+                        <div class="dashboard-chart-container">
+                            <h3>Órdenes por Estado</h3>
+                            <div class="chart-container">
+                                <canvas id="dashboard-order-status-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="dashboard-chart-container">
+                            <h3>Costos por Categoría (30 días)</h3>
+                            <div class="chart-container">
+                                <canvas id="dashboard-cost-category-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Activity and Alerts Section -->
+                    <div>
+                        <div class="dashboard-chart-container">
+                            <h3>Movimientos de Inventario (7 días)</h3>
+                            <div class="chart-container">
+                                <canvas id="dashboard-inventory-movement-chart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Alerts Container -->
+                        <div class="alerts-container">
+                            <div class="alerts-header">
+                                <h3>Alertas del Sistema</h3>
+                            </div>
+                            <div class="alert-tabs">
+                                <div class="alert-tab active" data-panel="low-stock-panel">
+                                    Stock Bajo <span class="badge" id="low-stock-count">0</span>
+                                </div>
+                                <div class="alert-tab" data-panel="delayed-orders-panel">
+                                    OC Retrasadas <span class="badge" id="delayed-orders-count">0</span>
+                                </div>
+                                <div class="alert-tab" data-panel="due-invoices-panel">
+                                    Facturas por Vencer <span class="badge" id="due-invoices-count">0</span>
+                                </div>
+                            </div>
+                            <div class="alert-content">
+                                <div class="alert-panel active" id="low-stock-panel">
+                                    <div id="low-stock-list">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                                <div class="alert-panel" id="delayed-orders-panel">
+                                    <div id="delayed-orders-list">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                                <div class="alert-panel" id="due-invoices-panel">
+                                    <div id="due-invoices-list">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity Section (Full Width) -->
+                    <div class="dashboard-full-width">
+                        <div class="activity-container">
+                            <div class="activity-header">
+                                <h3>Actividad Reciente</h3>
+                            </div>
+                            <div id="recent-activity-list">
+                                <!-- Will be populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requerimientos Module Content -->
+            <div class="content module-content" id="requerimientos-content" style="display: none;">
+                <h2 class="page-title">Gestión de Requerimientos</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total Requerimientos</h3>
+                            <p class="stat-value">42</p>
+                            <p class="stat-change positive">+8 esta semana <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pendientes</h3>
+                            <p class="stat-value">12</p>
+                            <p class="stat-change negative">+3 desde ayer <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Completados</h3>
+                            <p class="stat-value">27</p>
+                            <p class="stat-change positive">+15% <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Requirements Table -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Lista de Requerimientos</h3>
+                        <div class="table-actions">
+                            <div class="inventory-search">
+                                <input type="text" id="req-search" placeholder="Buscar requerimiento..." class="form-control">
+                            </div>
+                            <div class="table-filter">
+                                <select id="req-status-filter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="aprobado">Aprobado</option>
+                                    <option value="rechazado">Rechazado</option>
+                                    <option value="en-proceso">En Proceso</option>
+                                    <option value="completado">Completado</option>
+                                </select>
+                            </div>
+                            <div class="inventory-buttons">
+                                <button class="btn btn-primary" id="new-req-btn"><i class="fas fa-plus"></i> Nuevo Requerimiento</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="requirements-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>Área Solicitante</th>
+                                    <th>Estado</th>
+                                    <th>Prioridad</th>
+                                    <th>Materiales</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="requirements-table-body">
+                                <!-- Content will be loaded dynamically -->
+                            </tbody>
+                        </table>
+                        <div class="table-pagination">
+                            <div class="pagination-info">Mostrando <span id="req-showing">0-0</span> de <span id="req-total">0</span> requerimientos</div>
+                            <div class="pagination-controls" id="req-pagination">
+                                <!-- Pagination will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Module Content -->
+            <div class="content module-content" id="inventario-content" style="display: none;">
+                <h2 class="page-title">Gestión de Inventario</h2>
+                
+                <!-- Inventory Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total SKUs</h3>
+                            <p class="stat-value">1,254</p>
+                            <p class="stat-change positive">+24 este mes <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Stock Bajo</h3>
+                            <p class="stat-value">38</p>
+                            <p class="stat-change negative">+5 desde ayer <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Valor de Inventario</h3>
+                            <p class="stat-value">$1.2M</p>
+                            <p class="stat-change positive">+2.5% <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Table Card -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Lista de Materiales</h3>
+                        <div class="table-actions">
+                            <div class="inventory-search">
+                                <input type="text" id="inventory-search" placeholder="Buscar material..." class="form-control">
+                            </div>
+                            <div class="table-filter">
+                                <select id="category-filter">
+                                    <option value="all">Todas las categorías</option>
+                                    <option value="materia-prima">Materia Prima</option>
+                                    <option value="embalaje">Embalaje</option>
+                                    <option value="producto-terminado">Producto Terminado</option>
+                                    <option value="suministros">Suministros</option>
+                                </select>
+                            </div>
+                            <div class="inventory-buttons">
+                                <button class="btn btn-secondary"><i class="fas fa-sync-alt"></i> Ajuste de Inventario</button>
+                                <button class="btn btn-primary"><i class="fas fa-plus"></i> Nuevo Material</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Categoría</th>
+                                    <th>Stock Actual</th>
+                                    <th>Unidad</th>
+                                    <th>Stock Mínimo</th>
+                                    <th>Valor Unitario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>MP-1001</td>
+                                    <td>Aluminio 1mm</td>
+                                    <td>Materia Prima</td>
+                                    <td class="stock-level optimal">250</td>
+                                    <td>kg</td>
+                                    <td>100</td>
+                                    <td>$5.20</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>MP-1002</td>
+                                    <td>Acero Inoxidable</td>
+                                    <td>Materia Prima</td>
+                                    <td class="stock-level low">45</td>
+                                    <td>kg</td>
+                                    <td>80</td>
+                                    <td>$8.75</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EM-2001</td>
+                                    <td>Caja Cartón 30x20x15</td>
+                                    <td>Embalaje</td>
+                                    <td class="stock-level low">120</td>
+                                    <td>unid</td>
+                                    <td>200</td>
+                                    <td>$1.20</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>PT-3001</td>
+                                    <td>Motor Eléctrico 2HP</td>
+                                    <td>Producto Terminado</td>
+                                    <td class="stock-level optimal">35</td>
+                                    <td>unid</td>
+                                    <td>15</td>
+                                    <td>$245.00</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>SU-4001</td>
+                                    <td>Guantes de Seguridad</td>
+                                    <td>Suministros</td>
+                                    <td class="stock-level optimal">85</td>
+                                    <td>par</td>
+                                    <td>20</td>
+                                    <td>$12.50</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>MP-1003</td>
+                                    <td>Plástico ABS</td>
+                                    <td>Materia Prima</td>
+                                    <td class="stock-level low">28</td>
+                                    <td>kg</td>
+                                    <td>50</td>
+                                    <td>$4.80</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>EM-2002</td>
+                                    <td>Film Stretch</td>
+                                    <td>Embalaje</td>
+                                    <td class="stock-level optimal">48</td>
+                                    <td>rollo</td>
+                                    <td>10</td>
+                                    <td>$18.30</td>
+                                    <td class="actions">
+                                        <button class="action-btn"><i class="fas fa-eye"></i></button>
+                                        <button class="action-btn"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn"><i class="fas fa-history"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="table-pagination">
+                            <div class="pagination-info">Mostrando 1-7 de 1,254 materiales</div>
+                            <div class="pagination-controls">
+                                <button class="pagination-btn" disabled><i class="fas fa-chevron-left"></i></button>
+                                <button class="pagination-btn active">1</button>
+                                <button class="pagination-btn">2</button>
+                                <button class="pagination-btn">3</button>
+                                <button class="pagination-btn">4</button>
+                                <button class="pagination-btn">5</button>
+                                <button class="pagination-btn"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase Orders Module Content -->
+            <div class="content module-content" id="ordenes-content" style="display: none;">
+                <h2 class="page-title">Gestión de Órdenes de Compra</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total Órdenes</h3>
+                            <p class="stat-value">23</p>
+                            <p class="stat-change positive">+5 este mes <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pendientes de Recepción</h3>
+                            <p class="stat-value">8</p>
+                            <p class="stat-change neutral">Sin cambios <i class="fas fa-minus"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Valor Total</h3>
+                            <p class="stat-value">$45,230</p>
+                            <p class="stat-change positive">+12% <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purchase Orders Table -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Órdenes de Compra</h3>
+                        <div class="table-actions">
+                            <div class="inventory-search">
+                                <input type="text" id="po-search" placeholder="Buscar orden..." class="form-control">
+                            </div>
+                            <div class="table-filter">
+                                <select id="po-status-filter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="borrador">Borrador</option>
+                                    <option value="enviada">Enviada</option>
+                                    <option value="confirmada">Confirmada</option>
+                                    <option value="en-transito">En Tránsito</option>
+                                    <option value="recibida-parcial">Recibida Parcial</option>
+                                    <option value="completada">Completada</option>
+                                </select>
+                            </div>
+                            <div class="inventory-buttons">
+                                <button class="btn btn-secondary" id="from-req-btn"><i class="fas fa-clipboard-list"></i> Desde Requerimientos</button>
+                                <button class="btn btn-primary" id="new-po-btn"><i class="fas fa-plus"></i> Nueva Orden</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="po-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>Proveedor</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Fecha de Entrega</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="po-table-body">
+                                <!-- Content will be loaded dynamically -->
+                            </tbody>
+                        </table>
+                        <div class="table-pagination">
+                            <div class="pagination-info">Mostrando <span id="po-showing">0-0</span> de <span id="po-total">0</span> órdenes</div>
+                            <div class="pagination-controls" id="po-pagination">
+                                <!-- Pagination will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating/editing purchase order -->
+            <div id="purchase-order-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="po-modal-title">Nueva Orden de Compra</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="po-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="po-supplier">Proveedor *</label>
+                                <select id="po-supplier" class="form-control" required>
+                                    <option value="">Seleccione un proveedor</option>
+                                    <!-- Will be populated dynamically -->
+                                </select>
+                                <div class="form-error">Seleccione un proveedor</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="po-expected-date">Fecha Estimada de Entrega *</label>
+                                <input type="date" id="po-expected-date" class="form-control" required>
+                                <div class="form-error">Seleccione una fecha válida</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="po-payment-terms">Condiciones de Pago *</label>
+                                <select id="po-payment-terms" class="form-control" required>
+                                    <option value="">Seleccione condición</option>
+                                    <option value="contado">Contado</option>
+                                    <option value="credito-15">Crédito 15 días</option>
+                                    <option value="credito-30">Crédito 30 días</option>
+                                    <option value="credito-45">Crédito 45 días</option>
+                                    <option value="credito-60">Crédito 60 días</option>
+                                </select>
+                                <div class="form-error">Seleccione condición de pago</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="po-currency">Moneda *</label>
+                                <select id="po-currency" class="form-control" required>
+                                    <option value="USD">USD - Dólar Americano</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="MXN">MXN - Peso Mexicano</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Artículos</h4>
+                                <div id="po-items-container">
+                                    <!-- Items will be added here -->
+                                </div>
+                                <div class="form-actions" style="justify-content: flex-start; margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-po-item">
+                                        <i class="fas fa-plus"></i> Agregar Artículo
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="po-subtotal">Subtotal</label>
+                                <input type="text" id="po-subtotal" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="po-tax-rate">Impuesto (%)</label>
+                                <input type="number" id="po-tax-rate" class="form-control" value="16" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="po-tax-amount">Monto de Impuesto</label>
+                                <input type="text" id="po-tax-amount" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="po-total">Total</label>
+                                <input type="text" id="po-total" class="form-control" readonly>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="po-notes">Notas</label>
+                                <textarea id="po-notes" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width" id="po-approval-section" style="display: none;">
+                                <div class="card" style="margin-top: 15px;">
+                                    <div class="card-header" style="background-color: #fff3cd; color: #856404;">
+                                        <h3><i class="fas fa-exclamation-triangle"></i> Se Requiere Aprobación</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Esta orden excede el límite de aprobación automática ($5,000). Se notificará al supervisor para su aprobación.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="po-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-secondary" id="po-save-draft">Guardar Borrador</button>
+                        <button type="button" class="btn btn-primary" id="po-save">Generar OC</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for requirements selection -->
+            <div id="requirements-selection-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3>Seleccionar Requerimientos</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" id="req-filter" class="form-control" placeholder="Filtrar requerimientos...">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table" id="req-selection-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="select-all-req"></th>
+                                        <th>ID</th>
+                                        <th>Fecha</th>
+                                        <th>Área</th>
+                                        <th>Prioridad</th>
+                                        <th>Materiales</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="req-selection-body">
+                                    <!-- Will be populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="req-selection-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="req-selection-confirm">Crear Orden</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase Order detail view modal -->
+            <div id="po-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-po-title">Detalle de Orden de Compra</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-po-id">OC-001</h4>
+                                    <p id="detail-po-date">Fecha: 01/01/2023</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="po-pdf-btn">
+                                        <i class="fas fa-file-pdf"></i> Generar PDF
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="detail-po-edit-btn">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <div class="status-actions" id="po-status-action-buttons">
+                                        <!-- Status actions will be added dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="detail-section">
+                                    <h5>Información General</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Proveedor:</span>
+                                            <span id="detail-po-supplier" class="detail-value">Aceros Industriales S.A.</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Estado:</span>
+                                            <span id="detail-po-status" class="detail-value status-badge">Enviada</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Condición de Pago:</span>
+                                            <span id="detail-po-payment" class="detail-value">Crédito 30 días</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Fecha Estimada:</span>
+                                            <span id="detail-po-expected" class="detail-value">15/06/2023</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Creada por:</span>
+                                            <span id="detail-po-creator" class="detail-value">Admin</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Aprobada por:</span>
+                                            <span id="detail-po-approver" class="detail-value">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Artículos</h5>
+                                    <div class="table-responsive">
+                                        <table class="data-table" id="po-items-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>Descripción</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Precio Unit.</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="po-items-body">
+                                                <!-- Items will be populated dynamically -->
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td><strong>Subtotal:</strong></td>
+                                                    <td id="detail-po-subtotal">$0.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td><strong>Impuesto:</strong></td>
+                                                    <td id="detail-po-tax">$0.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td><strong>Total:</strong></td>
+                                                    <td id="detail-po-total">$0.00</td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Requerimientos Asociados</h5>
+                                    <div id="po-req-container">
+                                        <!-- Requirements will be added here -->
+                                        <p class="no-attachments">No hay requerimientos asociados</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Historial</h5>
+                                    <div class="req-history-timeline" id="po-history-timeline">
+                                        <!-- History will be populated dynamically -->
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Notas</h5>
+                                    <p id="detail-po-notes" class="detail-paragraph">
+                                        <!-- Notes text will be added here -->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating/editing material -->
+            <div id="material-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="material-modal-title">Nuevo Material</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="material-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="material-code">Código *</label>
+                                <input type="text" id="material-code" class="form-control" required>
+                                <div class="form-error">Código inválido o duplicado</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="material-desc">Descripción *</label>
+                                <input type="text" id="material-desc" class="form-control" required>
+                                <div class="form-error">Descripción requerida</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="material-category">Categoría *</label>
+                                <select id="material-category" class="form-control" required>
+                                    <option value="">Seleccione una categoría</option>
+                                    <option value="materia-prima">Materia Prima</option>
+                                    <option value="embalaje">Embalaje</option>
+                                    <option value="producto-terminado">Producto Terminado</option>
+                                    <option value="suministros">Suministros</option>
+                                </select>
+                                <div class="form-error">Seleccione una categoría</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="material-unit">Unidad *</label>
+                                <select id="material-unit" class="form-control" required>
+                                    <option value="">Seleccione una unidad</option>
+                                    <option value="kg">Kilogramo (kg)</option>
+                                    <option value="unid">Unidad (unid)</option>
+                                    <option value="lt">Litro (lt)</option>
+                                    <option value="mt">Metro (mt)</option>
+                                    <option value="par">Par</option>
+                                    <option value="rollo">Rollo</option>
+                                    <option value="caja">Caja</option>
+                                </select>
+                                <div class="form-error">Seleccione una unidad</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="material-stock">Stock Inicial *</label>
+                                <input type="number" id="material-stock" class="form-control" min="0" required>
+                                <div class="form-error">Stock inicial debe ser un número válido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="material-min-stock">Stock Mínimo *</label>
+                                <input type="number" id="material-min-stock" class="form-control" min="0" required>
+                                <div class="form-error">Stock mínimo debe ser un número válido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="material-cost">Costo Unitario *</label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="material-cost" class="form-control" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-error">Costo unitario debe ser un número válido</div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="material-location">Ubicación</label>
+                                <input type="text" id="material-location" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="material-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="material-save">Guardar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for inventory adjustment -->
+            <div id="adjustment-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Ajuste de Inventario</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="adjustment-form" class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="adjustment-material">Material *</label>
+                                <select id="adjustment-material" class="form-control" required>
+                                    <option value="">Seleccione un material</option>
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                                <div class="form-error">Seleccione un material</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="adjustment-type">Tipo de Ajuste *</label>
+                                <select id="adjustment-type" class="form-control" required>
+                                    <option value="">Seleccione tipo</option>
+                                    <option value="entrada">Entrada</option>
+                                    <option value="salida">Salida</option>
+                                </select>
+                                <div class="form-error">Seleccione un tipo de ajuste</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="adjustment-quantity">Cantidad *</label>
+                                <input type="number" id="adjustment-quantity" class="form-control" min="0.01" step="0.01" required>
+                                <div class="form-error">Ingrese una cantidad válida</div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="adjustment-reason">Motivo *</label>
+                                <select id="adjustment-reason" class="form-control" required>
+                                    <option value="">Seleccione un motivo</option>
+                                    <option value="compra">Compra</option>
+                                    <option value="venta">Venta</option>
+                                    <option value="devolucion">Devolución</option>
+                                    <option value="merma">Merma</option>
+                                    <option value="inventario">Ajuste de Inventario</option>
+                                    <option value="transferencia">Transferencia</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                                <div class="form-error">Seleccione un motivo</div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="adjustment-notes">Observaciones</label>
+                                <textarea id="adjustment-notes" class="form-control" rows="3"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="adjustment-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="adjustment-save">Guardar Ajuste</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Material detail view modal -->
+            <div id="material-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-material-title">Detalle de Material</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-material-code">MP-1001</h4>
+                                    <p id="detail-material-category">Materia Prima</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="detail-edit-btn">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="detail-section">
+                                    <h5>Información General</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Descripción:</span>
+                                            <span id="detail-material-desc" class="detail-value">Aluminio 1mm</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Unidad:</span>
+                                            <span id="detail-material-unit" class="detail-value">kg</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Ubicación:</span>
+                                            <span id="detail-material-location" class="detail-value">Almacén A - Rack 3</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Costo Unitario:</span>
+                                            <span id="detail-material-cost" class="detail-value">$5.20</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Stock Actual:</span>
+                                            <span id="detail-material-current-stock" class="detail-value">250 kg</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Stock Mínimo:</span>
+                                            <span id="detail-material-min-stock" class="detail-value">100 kg</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Valor Total:</span>
+                                            <span id="detail-material-total-value" class="detail-value">$1,300.00</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Estado:</span>
+                                            <span id="detail-material-status" class="detail-value status-badge">Óptimo</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Historial de Movimientos</h5>
+                                    <div class="table-responsive">
+                                        <table class="data-table" id="material-history-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Fecha</th>
+                                                    <th>Tipo</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Motivo</th>
+                                                    <th>Stock Final</th>
+                                                    <th>Usuario</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="material-history-body">
+                                                <!-- History will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating/editing requirement -->
+            <div id="requirement-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="requirement-modal-title">Nuevo Requerimiento</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="requirement-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="req-area">Área Solicitante *</label>
+                                <input type="text" id="req-area" class="form-control" required>
+                                <div class="form-error">Área requerida</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="req-priority">Prioridad *</label>
+                                <select id="req-priority" class="form-control" required>
+                                    <option value="">Seleccione prioridad</option>
+                                    <option value="baja">Baja</option>
+                                    <option value="media">Media</option>
+                                    <option value="alta">Alta</option>
+                                    <option value="urgente">Urgente</option>
+                                </select>
+                                <div class="form-error">Seleccione una prioridad</div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="req-justification">Justificación *</label>
+                                <textarea id="req-justification" class="form-control" rows="3" required></textarea>
+                                <div class="form-error">Justificación requerida</div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Materiales Solicitados</h4>
+                                <div id="materials-container">
+                                    <div class="material-row">
+                                        <div class="form-group" style="flex: 3">
+                                            <label>Material *</label>
+                                            <select class="form-control material-select" required>
+                                                <option value="">Seleccione un material</option>
+                                                <!-- Will be populated dynamically -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group" style="flex: 1">
+                                            <label>Cantidad *</label>
+                                            <input type="number" class="form-control material-quantity" min="1" required>
+                                        </div>
+                                        <div class="form-group" style="width: 40px; margin-top: 25px;">
+                                            <button type="button" class="action-btn remove-material"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="justify-content: flex-start; margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-material-row">
+                                        <i class="fas fa-plus"></i> Agregar Material
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-new-material">
+                                        <i class="fas fa-plus-circle"></i> Material No Registrado
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="req-attachments">Archivos Adjuntos</label>
+                                <input type="file" id="req-attachments" class="form-control" multiple>
+                                <div id="attachments-preview" class="attachments-preview"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="requirement-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="requirement-save">Guardar Requerimiento</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requirement detail view modal -->
+            <div id="requirement-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-req-title">Detalle de Requerimiento</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-req-id">REQ-001</h4>
+                                    <p id="detail-req-date">Fecha: 01/01/2023</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="detail-req-edit-btn">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <div class="status-actions" id="status-action-buttons">
+                                        <!-- Status actions will be added dynamically based on current status -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="detail-section">
+                                    <h5>Información General</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Área Solicitante:</span>
+                                            <span id="detail-req-area" class="detail-value">Producción</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Prioridad:</span>
+                                            <span id="detail-req-priority" class="detail-value status-badge">Alta</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Estado:</span>
+                                            <span id="detail-req-status" class="detail-value status-badge">Pendiente</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Solicitado por:</span>
+                                            <span id="detail-req-requestor" class="detail-value">Admin</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Justificación</h5>
+                                    <p id="detail-req-justification" class="detail-paragraph">
+                                        <!-- Justification text will be added here -->
+                                    </p>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Materiales Solicitados</h5>
+                                    <div class="table-responsive">
+                                        <table class="data-table" id="req-materials-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>Descripción</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Disponibilidad</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="req-materials-body">
+                                                <!-- Materials will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Historial</h5>
+                                    <div class="req-history-timeline" id="req-history-timeline">
+                                        <!-- History will be populated dynamically -->
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Archivos Adjuntos</h5>
+                                    <div id="detail-attachments" class="detail-attachments">
+                                        <!-- Attachments will be added here -->
+                                        <p class="no-attachments">No hay archivos adjuntos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Module Content -->
+            <div class="content module-content" id="salidas-content" style="display: none;">
+                <h2 class="page-title">Gestión de Salidas de Materiales</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-dolly-flatbed"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total Salidas</h3>
+                            <p class="stat-value">35</p>
+                            <p class="stat-change positive">+8 este mes <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pendientes</h3>
+                            <p class="stat-value">12</p>
+                            <p class="stat-change neutral">Sin cambios <i class="fas fa-minus"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Completadas</h3>
+                            <p class="stat-value">20</p>
+                            <p class="stat-change positive">+15% <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outputs Table -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Órdenes de Salida</h3>
+                        <div class="table-actions">
+                            <div class="inventory-search">
+                                <input type="text" id="output-search" placeholder="Buscar salida..." class="form-control">
+                            </div>
+                            <div class="table-filter">
+                                <select id="output-status-filter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="en-proceso">En Proceso</option>
+                                    <option value="completada">Completada</option>
+                                    <option value="con-incidencias">Con Incidencias</option>
+                                </select>
+                            </div>
+                            <div class="inventory-buttons">
+                                <button class="btn btn-primary" id="new-output-btn"><i class="fas fa-plus"></i> Nueva Salida</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="outputs-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>Destino</th>
+                                    <th>Solicitante</th>
+                                    <th>Fecha Programada</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="outputs-table-body">
+                                <!-- Content will be loaded dynamically -->
+                            </tbody>
+                        </table>
+                        <div class="table-pagination">
+                            <div class="pagination-info">Mostrando <span id="output-showing">0-0</span> de <span id="output-total">0</span> órdenes</div>
+                            <div class="pagination-controls" id="output-pagination">
+                                <!-- Pagination will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating/editing output -->
+            <div id="output-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="output-modal-title">Nueva Orden de Salida</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="output-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="output-destination">Destino *</label>
+                                <input type="text" id="output-destination" class="form-control" required placeholder="Área o proyecto de destino">
+                                <div class="form-error">Destino requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="output-requestor">Solicitante *</label>
+                                <input type="text" id="output-requestor" class="form-control" required placeholder="Persona que solicita los materiales">
+                                <div class="form-error">Solicitante requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="output-date">Fecha de Solicitud *</label>
+                                <input type="date" id="output-date" class="form-control" required>
+                                <div class="form-error">Fecha requerida</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="output-scheduled-date">Fecha Programada</label>
+                                <input type="date" id="output-scheduled-date" class="form-control">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="output-purpose">Finalidad *</label>
+                                <input type="text" id="output-purpose" class="form-control" required placeholder="Propósito o uso de los materiales">
+                                <div class="form-error">Finalidad requerida</div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Materiales</h4>
+                                <div id="output-items-container">
+                                    <!-- Items will be added here -->
+                                </div>
+                                <div class="form-actions" style="justify-content: flex-start; margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-output-item">
+                                        <i class="fas fa-plus"></i> Agregar Material
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="output-notes">Notas</label>
+                                <textarea id="output-notes" class="form-control" rows="2"></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width" id="output-completion-section" style="display: none;">
+                                <div class="card" style="margin-top: 15px;">
+                                    <div class="card-header" style="background-color: #e7f5ea; color: #155724;">
+                                        <h3><i class="fas fa-check-circle"></i> Confirmación de Entrega</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label for="output-delivered-to">Entregado a *</label>
+                                            <input type="text" id="output-delivered-to" class="form-control" placeholder="Nombre de quien recibe">
+                                            <div class="form-error">Nombre requerido</div>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label>Firma de Recepción *</label>
+                                            <div style="border: 1px solid #dee2e6; background-color: #fff; margin-bottom: 10px;">
+                                                <canvas id="signature-pad" width="100%" height="200" style="touch-action: none;"></canvas>
+                                            </div>
+                                            <div class="form-error" id="signature-error" style="display: none;">Se requiere firma</div>
+                                            <button type="button" class="btn btn-sm btn-secondary" id="clear-signature">Limpiar Firma</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="output-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="output-save">Guardar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output detail view modal -->
+            <div id="output-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-output-title">Detalle de Orden de Salida</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-output-id">SAL-001</h4>
+                                    <p id="detail-output-date">Fecha: 01/01/2023</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="detail-output-print-btn">
+                                        <i class="fas fa-print"></i> Imprimir
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="detail-output-edit-btn">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <div class="status-actions" id="output-status-actions">
+                                        <!-- Status actions will be added dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="detail-section">
+                                    <h5>Información General</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Destino:</span>
+                                            <span id="detail-output-destination" class="detail-value">Planta de Producción</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Solicitante:</span>
+                                            <span id="detail-output-requestor" class="detail-value">Juan Pérez</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Estado:</span>
+                                            <span id="detail-output-status" class="detail-value status-badge">Pendiente</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Fecha Programada:</span>
+                                            <span id="detail-output-scheduled" class="detail-value">15/06/2023</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Creada por:</span>
+                                            <span id="detail-output-creator" class="detail-value">Admin</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Finalidad:</span>
+                                            <span id="detail-output-purpose" class="detail-value">Producción Lote A-123</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section" id="delivery-info-section" style="display: none;">
+                                    <h5>Información de Entrega</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Entregado a:</span>
+                                            <span id="detail-output-delivered-to" class="detail-value">Pedro Rodríguez</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Fecha de Entrega:</span>
+                                            <span id="detail-output-delivery-date" class="detail-value">16/06/2023</span>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 15px;">
+                                        <span class="detail-label">Firma de recepción:</span>
+                                        <div id="detail-signature-container" style="margin-top: 10px; border: 1px solid #dee2e6; background-color: #fff; padding: 10px;">
+                                            <!-- Signature will be displayed here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Materiales</h5>
+                                    <div class="table-responsive">
+                                        <table class="data-table" id="output-items-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>Descripción</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Stock Actual</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="output-items-body">
+                                                <!-- Items will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Historial</h5>
+                                    <div class="req-history-timeline" id="output-history-timeline">
+                                        <!-- History will be populated dynamically -->
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Notas</h5>
+                                    <p id="detail-output-notes" class="detail-paragraph">
+                                        <!-- Notes text will be added here -->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reception Module Content -->
+            <div class="content module-content" id="recepcion-content" style="display: none;">
+                <h2 class="page-title">Recepción de Materiales</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-dolly"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Recepciones Pendientes</h3>
+                            <p class="stat-value" id="pending-receptions-count">0</p>
+                            <p class="stat-change neutral">Para hoy: <span id="today-receptions-count">0</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Con Incidencias</h3>
+                            <p class="stat-value" id="issues-count">0</p>
+                            <p class="stat-change negative">Pendientes por resolver</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Completadas</h3>
+                            <p class="stat-value" id="completed-receptions-count">0</p>
+                            <p class="stat-change positive">Este mes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calendar/List Tabs -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recepciones Programadas</h3>
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="list-view"><i class="fas fa-list"></i> Lista</button>
+                            <button class="tab-btn" data-tab="calendar-view"><i class="fas fa-calendar-alt"></i> Calendario</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="list-view">
+                            <div class="table-actions">
+                                <div class="inventory-search">
+                                    <input type="text" id="reception-search" placeholder="Buscar OC o proveedor..." class="form-control">
+                                </div>
+                                <div class="table-filter">
+                                    <select id="reception-filter">
+                                        <option value="all">Todas las órdenes</option>
+                                        <option value="today">Para hoy</option>
+                                        <option value="week">Esta semana</option>
+                                        <option value="delayed">Retrasadas</option>
+                                    </select>
+                                </div>
+                                <div class="inventory-buttons">
+                                    <button class="btn btn-primary" id="new-reception-btn"><i class="fas fa-plus"></i> Nueva Recepción</button>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="data-table" id="scheduled-receptions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>OC</th>
+                                            <th>Proveedor</th>
+                                            <th>Fecha Estimada</th>
+                                            <th>Estado OC</th>
+                                            <th>Items</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scheduled-receptions-body">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="calendar-view" style="display: none;">
+                            <div class="reception-calendar">
+                                <div class="calendar-header">
+                                    <button class="btn btn-sm btn-secondary" id="prev-month"><i class="fas fa-chevron-left"></i></button>
+                                    <h4 id="calendar-title">Mayo 2023</h4>
+                                    <button class="btn btn-sm btn-secondary" id="next-month"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                                <div class="calendar-grid" id="calendar-grid">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Receptions Table -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Recepciones Recientes</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="recent-receptions-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fecha</th>
+                                    <th>OC</th>
+                                    <th>Proveedor</th>
+                                    <th>Estado</th>
+                                    <th>Incidencias</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-receptions-body">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                        <div class="table-pagination">
+                            <div class="pagination-info">Mostrando <span id="reception-showing">0-0</span> de <span id="reception-total">0</span> recepciones</div>
+                            <div class="pagination-controls" id="reception-pagination">
+                                <!-- Pagination will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating reception -->
+            <div id="reception-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="reception-modal-title">Nueva Recepción</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="reception-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="reception-po">Orden de Compra *</label>
+                                <select id="reception-po" class="form-control" required>
+                                    <option value="">Seleccione una OC</option>
+                                    <!-- Will be populated dynamically -->
+                                </select>
+                                <div class="form-error">Seleccione una orden de compra</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reception-date">Fecha de Recepción *</label>
+                                <input type="date" id="reception-date" class="form-control" required>
+                                <div class="form-error">Ingrese la fecha de recepción</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="reception-doc-number">Número de Documento</label>
+                                <input type="text" id="reception-doc-number" class="form-control" placeholder="Guía, factura, etc.">
+                            </div>
+                            <div class="form-group">
+                                <label for="reception-status">Estado de Recepción *</label>
+                                <select id="reception-status" class="form-control" required>
+                                    <option value="">Seleccione un estado</option>
+                                    <option value="completa">Completa</option>
+                                    <option value="parcial">Parcial</option>
+                                    <option value="incidencia">Con Incidencias</option>
+                                </select>
+                                <div class="form-error">Seleccione el estado de la recepción</div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Detalle de Materiales</h4>
+                                <div class="table-responsive">
+                                    <table class="data-table" id="reception-items-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Código/Descripción</th>
+                                                <th>Cantidad Ordenada</th>
+                                                <th>Cantidad Recibida</th>
+                                                <th>Estado</th>
+                                                <th>Observación</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reception-items-body">
+                                            <!-- Will be populated dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width" id="incidents-section" style="display: none;">
+                                <h4>Reporte de Incidencias</h4>
+                                <div id="incidents-container">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" id="add-incident-btn">
+                                    <i class="fas fa-plus"></i> Agregar Incidencia
+                                </button>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="reception-notes">Observaciones Generales</label>
+                                <textarea id="reception-notes" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="reception-attachments">Documentos Adjuntos</label>
+                                <input type="file" id="reception-attachments" class="form-control" multiple>
+                                <div id="reception-attachments-preview" class="attachments-preview"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="reception-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="reception-save">Confirmar Recepción</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reception detail view modal -->
+            <div id="reception-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-reception-title">Detalle de Recepción</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-reception-id">REC-001</h4>
+                                    <p id="detail-reception-date">Fecha: 01/01/2023</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="detail-reception-print-btn">
+                                        <i class="fas fa-print"></i> Imprimir
+                                    </button>
+                                    <div id="reception-status-actions">
+                                        <!-- Status actions will be added dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="detail-section">
+                                    <h5>Información General</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Orden de Compra:</span>
+                                            <span id="detail-reception-po" class="detail-value">OC-001</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Proveedor:</span>
+                                            <span id="detail-reception-supplier" class="detail-value">Aceros Industriales S.A.</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Estado:</span>
+                                            <span id="detail-reception-status" class="detail-value status-badge">Completa</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Documento:</span>
+                                            <span id="detail-reception-doc" class="detail-value">GR-12345</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Recibido por:</span>
+                                            <span id="detail-reception-receiver" class="detail-value">Admin</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Fecha de Recepción:</span>
+                                            <span id="detail-reception-received-date" class="detail-value">01/01/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Comparativo OC vs. Recibido</h5>
+                                    <div class="table-responsive">
+                                        <table class="data-table" id="detail-reception-items-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código/Descripción</th>
+                                                    <th>Ordenado</th>
+                                                    <th>Recibido</th>
+                                                    <th>Diferencia</th>
+                                                    <th>Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="detail-reception-items-body">
+                                                <!-- Will be populated dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section" id="detail-incidents-section">
+                                    <h5>Incidencias Reportadas</h5>
+                                    <div id="detail-incidents-container">
+                                        <!-- Will be populated dynamically -->
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Observaciones</h5>
+                                    <p id="detail-reception-notes" class="detail-paragraph">
+                                        <!-- Notes text will be added here -->
+                                    </p>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Documentos Adjuntos</h5>
+                                    <div id="detail-reception-attachments" class="detail-attachments">
+                                        <!-- Attachments will be added here -->
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Historial</h5>
+                                    <div class="req-history-timeline" id="reception-history-timeline">
+                                        <!-- History will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proveedores Module Content -->
+            <div class="content module-content" id="proveedores-content" style="display: none;">
+                <h2 class="page-title">Gestión de Proveedores</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Total Proveedores</h3>
+                            <p class="stat-value">24</p>
+                            <p class="stat-change positive">+3 este mes <i class="fas fa-arrow-up"></i></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Proveedores Activos</h3>
+                            <p class="stat-value">18</p>
+                            <p class="stat-change positive">75% del total</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Órdenes Activas</h3>
+                            <p class="stat-value">12</p>
+                            <p class="stat-change neutral">Sin cambios <i class="fas fa-minus"></i></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suppliers Table -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Lista de Proveedores</h3>
+                        <div class="table-actions">
+                            <div class="supplier-search">
+                                <input type="text" id="supplier-search" placeholder="Buscar proveedor..." class="form-control">
+                            </div>
+                            <div class="table-filter">
+                                <select id="supplier-category-filter">
+                                    <option value="all">Todas las categorías</option>
+                                    <option value="materia-prima">Materia Prima</option>
+                                    <option value="embalaje">Embalaje</option>
+                                    <option value="suministros">Suministros</option>
+                                    <option value="servicios">Servicios</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="maquinaria">Maquinaria</option>
+                                </select>
+                            </div>
+                            <div class="table-filter">
+                                <select id="supplier-status-filter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                    <option value="pending">Pendiente</option>
+                                </select>
+                            </div>
+                            <div class="supplier-buttons">
+                                <button class="btn btn-primary" id="new-supplier-btn"><i class="fas fa-plus"></i> Nuevo Proveedor</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="suppliers-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Contacto</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="suppliers-table-body">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating/editing supplier -->
+            <div id="supplier-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="supplier-modal-title">Nuevo Proveedor</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="supplier-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="supplier-id">ID *</label>
+                                <input type="text" id="supplier-id" class="form-control" required placeholder="Ej. SUP-001">
+                                <div class="form-error">ID requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-name">Nombre *</label>
+                                <input type="text" id="supplier-name" class="form-control" required placeholder="Nombre comercial">
+                                <div class="form-error">Nombre requerido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-category">Categoría *</label>
+                                <select id="supplier-category" class="form-control" required>
+                                    <option value="">Seleccione una categoría</option>
+                                    <option value="materia-prima">Materia Prima</option>
+                                    <option value="embalaje">Embalaje</option>
+                                    <option value="producto-terminado">Producto Terminado</option>
+                                    <option value="suministros">Suministros</option>
+                                    <option value="servicios">Servicios</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="maquinaria">Maquinaria</option>
+                                    <option value="repuestos">Repuestos</option>
+                                    <option value="software">Software</option>
+                                </select>
+                                <div class="form-error">Categoría requerida</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-status">Estado *</label>
+                                <select id="supplier-status" class="form-control" required>
+                                    <option value="">Seleccione un estado</option>
+                                    <option value="active">Activo</option>
+                                    <option value="inactive">Inactivo</option>
+                                    <option value="pending">Pendiente de Aprobación</option>
+                                </select>
+                                <div class="form-error">Estado requerido</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="supplier-tax-id">ID Fiscal / RFC</label>
+                                <input type="text" id="supplier-tax-id" class="form-control" placeholder="ID fiscal o RFC">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-website">Sitio Web</label>
+                                <input type="url" id="supplier-website" class="form-control" placeholder="www.ejemplo.com">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="supplier-address">Dirección</label>
+                                <input type="text" id="supplier-address" class="form-control" placeholder="Calle, número, etc.">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="supplier-city">Ciudad</label>
+                                <input type="text" id="supplier-city" class="form-control" placeholder="Ciudad">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-state">Estado/Provincia</label>
+                                <input type="text" id="supplier-state" class="form-control" placeholder="Estado o provincia">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-zip">Código Postal</label>
+                                <input type="text" id="supplier-zip" class="form-control" placeholder="Código postal">
+                            </div>
+                            <div class="form-group">
+                                <label for="supplier-country">País</label>
+                                <input type="text" id="supplier-country" class="form-control" placeholder="País">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Contactos</h4>
+                                <div id="contacts-container">
+                                    <!-- Contact rows will be added here -->
+                                </div>
+                                <div class="form-actions" style="justify-content: flex-start; margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-contact-btn">
+                                        <i class="fas fa-plus"></i> Agregar Contacto
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Cuentas Bancarias</h4>
+                                <div id="bank-accounts-container">
+                                    <!-- Bank account rows will be added here -->
+                                </div>
+                                <div class="form-actions" style="justify-content: flex-start; margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-bank-account-btn">
+                                        <i class="fas fa-plus"></i> Agregar Cuenta
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Categorías de Productos</h4>
+                                <div class="supplier-category-selector">
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-acero" value="Acero">
+                                        <label for="cat-acero">Acero</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-aluminio" value="Aluminio">
+                                        <label for="cat-aluminio">Aluminio</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-plasticos" value="Plásticos">
+                                        <label for="cat-plasticos">Plásticos</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-electronicos" value="Electrónicos">
+                                        <label for="cat-electronicos">Electrónicos</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-herramientas" value="Herramientas">
+                                        <label for="cat-herramientas">Herramientas</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-quimicos" value="Químicos">
+                                        <label for="cat-quimicos">Químicos</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-papel" value="Papel">
+                                        <label for="cat-papel">Papel</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-madera" value="Madera">
+                                        <label for="cat-madera">Madera</label>
+                                    </div>
+                                    <div class="category-checkbox-container">
+                                        <input type="checkbox" name="product-category" id="cat-textiles" value="Textiles">
+                                        <label for="cat-textiles">Textiles</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <h4>Documentos</h4>
+                                <input type="file" id="supplier-document-upload" style="display: none;" multiple>
+                                <div id="documents-container">
+                                    <!-- Document items will be added here -->
+                                </div>
+                                <div class="form-actions" style="justify-content: flex-start; margin-bottom: 15px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="add-document-btn">
+                                        <i class="fas fa-file-upload"></i> Subir Documento
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="supplier-notes">Notas</label>
+                                <textarea id="supplier-notes" class="form-control" rows="3" placeholder="Observaciones y detalles adicionales"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="supplier-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="supplier-save">Guardar Proveedor</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Supplier detail view modal -->
+            <div id="supplier-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-supplier-title">Detalle de Proveedor</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-supplier-id">SUP-001</h4>
+                                    <p id="detail-supplier-name">Aceros Industriales S.A.</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="detail-edit-btn">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn btn-primary btn-sm" id="detail-review-btn">
+                                        <i class="fas fa-star"></i> Evaluar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="tab-nav">
+                                    <div class="tab-nav-item active" data-tab="general-info">Información General</div>
+                                    <div class="tab-nav-item" data-tab="contacts-tab">Contactos</div>
+                                    <div class="tab-nav-item" data-tab="documents-tab">Documentos</div>
+                                    <div class="tab-nav-item" data-tab="orders-tab">Órdenes de Compra</div>
+                                    <div class="tab-nav-item" data-tab="reviews-tab">Evaluaciones</div>
+                                </div>
+                                
+                                <div class="tab-content-item active" id="general-info">
+                                    <div class="detail-section">
+                                        <h5>Información Básica</h5>
+                                        <div class="detail-grid">
+                                            <div class="detail-item">
+                                                <span class="detail-label">Categoría:</span>
+                                                <span id="detail-supplier-category" class="detail-value">Materia Prima</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Estado:</span>
+                                                <span id="detail-supplier-status" class="detail-value status-badge">Activo</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">ID Fiscal:</span>
+                                                <span id="detail-supplier-tax-id" class="detail-value">AIS123456</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Sitio Web:</span>
+                                                <span id="detail-supplier-website" class="detail-value">www.acerosindustriales.com</span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label">Calificación:</span>
+                                                <span id="detail-supplier-rating" class="detail-value">
+                                                    <div class="rating-stars">
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i>
+                                                        <i class="far fa-star"></i>
+                                                        <span class="rating-number">(4.0)</span>
+                                                    </div>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="detail-section">
+                                        <h5>Dirección</h5>
+                                        <p id="detail-supplier-address" class="detail-paragraph">
+                                            Av. Industrial 123, Ciudad Industrial<br>
+                                            <span id="detail-supplier-city">Ciudad Industrial</span>, 
+                                            <span id="detail-supplier-state">Estado Central</span><br>
+                                            <span id="detail-supplier-country">México</span>
+                                        </p>
+                                    </div>
+                                    
+                                    <div class="detail-section">
+                                        <h5>Categorías de Productos</h5>
+                                        <div id="detail-supplier-categories">
+                                            <span class="supplier-category-item">Acero</span>
+                                            <span class="supplier-category-item">Aluminio</span>
+                                            <span class="supplier-category-item">Metales</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="detail-section">
+                                        <h5>Información Bancaria</h5>
+                                        <div id="detail-accounts-container">
+                                            <!-- Bank accounts will be added here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content-item" id="contacts-tab">
+                                    <div class="detail-section">
+                                        <h5>Contactos</h5>
+                                        <div class="detail-grid" id="detail-contacts-container">
+                                            <!-- Contacts will be added here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content-item" id="documents-tab">
+                                    <div class="detail-section">
+                                        <h5>Documentos</h5>
+                                        <div id="detail-documents-container">
+                                            <!-- Documents will be added here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content-item" id="orders-tab">
+                                    <div class="detail-section">
+                                        <h5>Órdenes de Compra</h5>
+                                        <div id="detail-orders-container">
+                                            <!-- Orders will be added here -->
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="tab-content-item" id="reviews-tab">
+                                    <div class="detail-section">
+                                        <h5>Evaluaciones del Proveedor</h5>
+                                        <div id="detail-reviews-container">
+                                            <!-- Reviews will be added here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for supplier review -->
+            <div id="supplier-review-modal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Evaluar Proveedor</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="review-form" class="form-grid">
+                            <div class="form-group full-width">
+                                <h4>Proveedor: <span id="review-supplier-name">Aceros Industriales S.A.</span></h4>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="review-title">Título de Evaluación *</label>
+                                <input type="text" id="review-title" class="form-control" required placeholder="Ej. Evaluación Trimestral Q1">
+                                <div class="form-error">Título requerido</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="quality-rating">Calidad (1-5) *</label>
+                                <select id="quality-rating" class="form-control" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="1">1 - Muy Baja</option>
+                                    <option value="2">2 - Baja</option>
+                                    <option value="3">3 - Media</option>
+                                    <option value="4">4 - Alta</option>
+                                    <option value="5">5 - Excelente</option>
+                                </select>
+                                <div class="form-error">Calificación requerida</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="delivery-rating">Entrega (1-5) *</label>
+                                <select id="delivery-rating" class="form-control" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="1">1 - Muy Mala</option>
+                                    <option value="2">2 - Mala</option>
+                                    <option value="3">3 - Regular</option>
+                                    <option value="4">4 - Buena</option>
+                                    <option value="5">5 - Excelente</option>
+                                </select>
+                                <div class="form-error">Calificación requerida</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="price-rating">Precio (1-5) *</label>
+                                <select id="price-rating" class="form-control" required>
+                                    <option value="">Seleccione</option>
+                                    <option value="1">1 - Muy Caro</option>
+                                    <option value="2">2 - Caro</option>
+                                    <option value="3">3 - Justo</option>
+                                    <option value="4">4 - Económico</option>
+                                    <option value="5">5 - Muy Económico</option>
+                                </select>
+                                <div class="form-error">Calificación requerida</div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="review-comments">Comentarios *</label>
+                                <textarea id="review-comments" class="form-control" rows="4" required placeholder="Añada sus comentarios sobre el desempeño del proveedor"></textarea>
+                                <div class="form-error">Comentarios requeridos</div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="review-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="review-save">Guardar Evaluación</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contabilidad Module Content -->
+            <div class="content module-content" id="contabilidad-content" style="display: none;">
+                <h2 class="page-title">Gestión de Contabilidad</h2>
+                
+                <!-- Stats Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Facturas Pendientes</h3>
+                            <p class="stat-value" id="pending-invoices-count">0</p>
+                            <p class="stat-change negative">Por verificar: <span id="to-verify-count">0</span></p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pagos Próximos (7 días)</h3>
+                            <p class="stat-value" id="upcoming-payments-value">$0.00</p>
+                            <p class="stat-change neutral"><span id="upcoming-payments-count">0</span> facturas</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Pagos Este Mes</h3>
+                            <p class="stat-value" id="monthly-payments-value">$0.00</p>
+                            <p class="stat-change positive"><span id="monthly-payments-count">0</span> facturas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Resumen Financiero</h3>
+                        <div class="table-filter">
+                            <select id="finance-period-filter">
+                                <option value="month">Este Mes</option>
+                                <option value="quarter">Este Trimestre</option>
+                                <option value="year">Este Año</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 300px;">
+                                <canvas id="expenses-by-category-chart" width="100%" height="250"></canvas>
+                            </div>
+                            <div style="flex: 1; min-width: 300px;">
+                                <canvas id="payment-status-chart" width="100%" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices Table -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Facturas</h3>
+                        <div class="table-actions">
+                            <div class="inventory-search">
+                                <input type="text" id="invoice-search" placeholder="Buscar factura..." class="form-control">
+                            </div>
+                            <div class="table-filter">
+                                <select id="invoice-status-filter">
+                                    <option value="all">Todos los estados</option>
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="verificada">Verificada</option>
+                                    <option value="pagada">Pagada</option>
+                                    <option value="rechazada">Rechazada</option>
+                                </select>
+                            </div>
+                            <div class="inventory-buttons">
+                                <button class="btn btn-secondary" id="export-invoices-btn"><i class="fas fa-file-export"></i> Exportar</button>
+                                <button class="btn btn-primary" id="new-invoice-btn"><i class="fas fa-plus"></i> Registrar Factura</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="invoices-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Núm. Factura</th>
+                                    <th>Fecha</th>
+                                    <th>OC</th>
+                                    <th>Proveedor</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoices-table-body">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                        <div class="table-pagination">
+                            <div class="pagination-info">Mostrando <span id="invoice-showing">0-0</span> de <span id="invoice-total">0</span> facturas</div>
+                            <div class="pagination-controls" id="invoice-pagination">
+                                <!-- Pagination will be generated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Schedule -->
+                <div class="card data-table-card">
+                    <div class="card-header">
+                        <h3>Calendario de Pagos</h3>
+                        <div class="table-filter">
+                            <select id="payment-period-filter">
+                                <option value="week">Próximos 7 días</option>
+                                <option value="month">Próximos 30 días</option>
+                                <option value="quarter">Próximos 90 días</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table class="data-table" id="payment-schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha de Pago</th>
+                                    <th>ID Factura</th>
+                                    <th>Proveedor</th>
+                                    <th>Monto</th>
+                                    <th>Días Restantes</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payment-schedule-body">
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for creating/editing invoice -->
+            <div id="invoice-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="invoice-modal-title">Registrar Nueva Factura</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="invoice-form" class="form-grid">
+                            <div class="form-group">
+                                <label for="invoice-purchase-order">Orden de Compra *</label>
+                                <select id="invoice-purchase-order" class="form-control" required>
+                                    <option value="">Seleccione una OC</option>
+                                    <!-- Will be populated dynamically -->
+                                </select>
+                                <div class="form-error">Seleccione una orden de compra</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-reception">Recepción Asociada</label>
+                                <select id="invoice-reception" class="form-control">
+                                    <option value="">Seleccione una recepción</option>
+                                    <!-- Will be populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-number">Número de Factura *</label>
+                                <input type="text" id="invoice-number" class="form-control" required>
+                                <div class="form-error">Ingrese el número de factura</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-date">Fecha de Factura *</label>
+                                <input type="date" id="invoice-date" class="form-control" required>
+                                <div class="form-error">Seleccione la fecha de factura</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-amount">Monto Total *</label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="invoice-amount" class="form-control" min="0" step="0.01" required>
+                                </div>
+                                <div class="form-error">Ingrese el monto total</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-tax-amount">Monto de Impuestos</label>
+                                <div class="input-with-prefix">
+                                    <span class="input-prefix">$</span>
+                                    <input type="number" id="invoice-tax-amount" class="form-control" min="0" step="0.01">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-currency">Moneda *</label>
+                                <select id="invoice-currency" class="form-control" required>
+                                    <option value="USD">USD - Dólar Americano</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="MXN">MXN - Peso Mexicano</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoice-due-date">Fecha de Vencimiento *</label>
+                                <input type="date" id="invoice-due-date" class="form-control" required>
+                                <div class="form-error">Seleccione la fecha de vencimiento</div>
+                            </div>
+
+                            <div class="form-group full-width" id="3way-match-section">
+                                <h4>Verificación 3-way Match</h4>
+                                <div class="card" style="margin-top: 10px;">
+                                    <div class="card-body">
+                                        <table class="data-table comparison-table" id="match-comparison-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Concepto</th>
+                                                    <th>Orden de Compra</th>
+                                                    <th>Recepción</th>
+                                                    <th>Factura</th>
+                                                    <th>Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="match-comparison-body">
+                                                <tr>
+                                                    <td>Cantidad de Items</td>
+                                                    <td id="po-item-count">-</td>
+                                                    <td id="reception-item-count">-</td>
+                                                    <td id="invoice-item-count">-</td>
+                                                    <td id="item-count-status">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Monto Subtotal</td>
+                                                    <td id="po-subtotal">-</td>
+                                                    <td id="reception-subtotal">-</td>
+                                                    <td id="invoice-subtotal">-</td>
+                                                    <td id="subtotal-status">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Monto Total</td>
+                                                    <td id="po-total">-</td>
+                                                    <td id="reception-total">-</td>
+                                                    <td id="invoice-total-field">-</td>
+                                                    <td id="total-status">-</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="4">Resultado de Verificación:</td>
+                                                    <td id="verification-result">Pendiente</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="invoice-notes">Notas</label>
+                                <textarea id="invoice-notes" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="invoice-attachments">Adjuntos</label>
+                                <input type="file" id="invoice-attachments" class="form-control" multiple>
+                                <div id="invoice-attachments-preview" class="attachments-preview"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="invoice-cancel">Cancelar</button>
+                        <button type="button" class="btn btn-secondary" id="verify-invoice">Verificar</button>
+                        <button type="button" class="btn btn-primary" id="invoice-save">Guardar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice detail view modal -->
+            <div id="invoice-detail-modal" class="modal">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h3 id="detail-invoice-title">Detalle de Factura</h3>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="detail-container">
+                            <div class="detail-header">
+                                <div class="detail-info">
+                                    <h4 id="detail-invoice-id">INV-001</h4>
+                                    <p id="detail-invoice-date">Fecha: 01/01/2023</p>
+                                </div>
+                                <div class="detail-actions">
+                                    <button class="btn btn-secondary btn-sm" id="export-invoice-btn">
+                                        <i class="fas fa-file-export"></i> Exportar
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm" id="detail-invoice-edit-btn">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <div id="invoice-status-actions">
+                                        <!-- Status actions will be added dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-content">
+                                <div class="detail-section">
+                                    <h5>Información General</h5>
+                                    <div class="detail-grid">
+                                        <div class="detail-item">
+                                            <span class="detail-label">Número de Factura:</span>
+                                            <span id="detail-invoice-number" class="detail-value">FAC-12345</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Orden de Compra:</span>
+                                            <span id="detail-invoice-po" class="detail-value">OC-001</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Proveedor:</span>
+                                            <span id="detail-invoice-supplier" class="detail-value">Aceros Industriales S.A.</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Estado:</span>
+                                            <span id="detail-invoice-status" class="detail-value status-badge">Pendiente</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Monto Total:</span>
+                                            <span id="detail-invoice-amount" class="detail-value">$1,234.56</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Fecha de Vencimiento:</span>
+                                            <span id="detail-invoice-due-date" class="detail-value">15/01/2023</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Registrada por:</span>
+                                            <span id="detail-invoice-creator" class="detail-value">Admin</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <span class="detail-label">Fecha de Registro:</span>
+                                            <span id="detail-invoice-created-date" class="detail-value">01/01/2023</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Verificación 3-way Match</h5>
+                                    <div class="card" style="margin-top: 10px;">
+                                        <div class="card-body">
+                                            <table class="data-table comparison-table" id="detail-match-comparison-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Concepto</th>
+                                                        <th>Orden de Compra</th>
+                                                        <th>Recepción</th>
+                                                        <th>Factura</th>
+                                                        <th>Estado</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="detail-match-comparison-body">
+                                                    <!-- Will be populated dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Notas</h5>
+                                    <p id="detail-invoice-notes" class="detail-paragraph">
+                                        <!-- Notes text will be added here -->
+                                    </p>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Archivos Adjuntos</h5>
+                                    <div id="detail-invoice-attachments" class="detail-attachments">
+                                        <!-- Attachments will be added here -->
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-section">
+                                    <h5>Historial</h5>
+                                    <div class="req-history-timeline" id="invoice-history-timeline">
+                                        <!-- History will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reportes Module Content -->
+            <div class="content module-content" id="reportes-content" style="display: none;">
+                <h2 class="page-title">Reportes y Análisis</h2>
+                
+                <!-- KPI Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Valor de Inventario</h3>
+                            <p class="stat-value" id="kpi-inventory-value">$0.00</p>
+                            <p class="stat-change neutral">Total en almacén</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Órdenes Pendientes</h3>
+                            <p class="stat-value" id="kpi-pending-orders">0</p>
+                            <p class="stat-change neutral">En proceso</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Eficiencia de Compras</h3>
+                            <p class="stat-value" id="kpi-purchase-efficiency">0%</p>
+                            <p class="stat-change neutral">Entregas a tiempo</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Rotación de Inventario</h3>
+                            <p class="stat-value" id="kpi-inventory-turnover">0%</p>
+                            <p class="stat-change neutral">Período actual</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Period Filter -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Filtros</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="report-period-filter">Período</label>
+                                <select id="report-period-filter" class="form-control">
+                                    <option value="month">Mes Actual</option>
+                                    <option value="last-month">Mes Anterior</option>
+                                    <option value="quarter">Trimestre Actual</option>
+                                    <option value="year">Año Actual</option>
+                                    <option value="custom">Personalizado</option>
+                                </select>
+                            </div>
+                            <div class="form-group custom-date-range" style="display: none;">
+                                <label>Rango Personalizado</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="date" id="report-start-date" class="form-control">
+                                    <input type="date" id="report-end-date" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Tabs -->
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        <div class="tab-buttons">
+                            <button class="report-tab-btn active" data-tab="dashboard-report"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+                            <button class="report-tab-btn" data-tab="purchase-analysis-report"><i class="fas fa-shopping-cart"></i> Análisis de Compras</button>
+                            <button class="report-tab-btn" data-tab="supplier-performance-report"><i class="fas fa-handshake"></i> Desempeño de Proveedores</button>
+                            <button class="report-tab-btn" data-tab="project-consumption-report"><i class="fas fa-project-diagram"></i> Consumo por Proyecto</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Dashboard Report -->
+                        <div class="report-content" id="dashboard-report">
+                            <div class="report-header">
+                                <h3>Dashboard General</h3>
+                                <div class="report-actions">
+                                    <button class="btn btn-secondary export-report-btn" data-format="excel"><i class="fas fa-file-excel"></i> Excel</button>
+                                    <button class="btn btn-secondary export-report-btn" data-format="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                                </div>
+                            </div>
+                            
+                            <div class="report-grid">
+                                <div class="report-chart-container">
+                                    <h4>Órdenes por Estado</h4>
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="order-status-chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="report-chart-container">
+                                    <h4>Movimientos de Inventario</h4>
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="inventory-movement-chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="report-chart-container">
+                                    <h4>Costos por Categoría</h4>
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="costs-category-chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="report-chart-container">
+                                    <h4>Desempeño de Proveedores</h4>
+                                    <div class="chart-container" style="position: relative; height: 300px;">
+                                        <canvas id="supplier-performance-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Purchase Analysis Report -->
+                        <div class="report-content" id="purchase-analysis-report" style="display: none;">
+                            <div class="report-header">
+                                <h3>Análisis de Compras</h3>
+                                <div class="report-actions">
+                                    <button class="btn btn-secondary export-report-btn" data-format="excel"><i class="fas fa-file-excel"></i> Excel</button>
+                                    <button class="btn btn-secondary export-report-btn" data-format="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-container" style="position: relative; height: 400px; margin-bottom: 30px;">
+                                <canvas id="purchase-analysis-chart"></canvas>
+                            </div>
+                            
+                            <h4>Materiales Más Comprados</h4>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Código</th>
+                                            <th>Descripción</th>
+                                            <th>Cantidad Total</th>
+                                            <th>N° Órdenes</th>
+                                            <th>Valor Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="purchase-analysis-table-body">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Supplier Performance Report -->
+                        <div class="report-content" id="supplier-performance-report" style="display: none;">
+                            <div class="report-header">
+                                <h3>Desempeño de Proveedores</h3>
+                                <div class="report-actions">
+                                    <button class="btn btn-secondary export-report-btn" data-format="excel"><i class="fas fa-file-excel"></i> Excel</button>
+                                    <button class="btn btn-secondary export-report-btn" data-format="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-container" style="position: relative; height: 400px; margin-bottom: 30px;">
+                                <canvas id="supplier-performance-detail-chart"></canvas>
+                            </div>
+                            
+                            <h4>Evaluación de Proveedores</h4>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Proveedor</th>
+                                            <th>N° Órdenes</th>
+                                            <th>% A Tiempo</th>
+                                            <th>Calidad</th>
+                                            <th>Entrega</th>
+                                            <th>Precio</th>
+                                            <th>Promedio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="supplier-performance-table-body">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Project Consumption Report -->
+                        <div class="report-content" id="project-consumption-report" style="display: none;">
+                            <div class="report-header">
+                                <h3>Consumo por Proyecto</h3>
+                                <div class="report-actions">
+                                    <button class="btn btn-secondary export-report-btn" data-format="excel"><i class="fas fa-file-excel"></i> Excel</button>
+                                    <button class="btn btn-secondary export-report-btn" data-format="pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+                                </div>
+                            </div>
+                            
+                            <div class="chart-container" style="position: relative; height: 400px; margin-bottom: 30px;">
+                                <canvas id="project-consumption-chart"></canvas>
+                            </div>
+                            
+                            <h4>Listado de Proyectos</h4>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Proyecto</th>
+                                            <th>Materiales</th>
+                                            <th>Valor Total</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="project-consumption-table-body">
+                                        <!-- Will be populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Runner Module Content -->
+            <div class="content module-content" id="test-runner-content" style="display: none;">
+                <h2 class="page-title">Test Runner - Pruebas Automatizadas</h2>
+                
+                <!-- Test Runner Interface -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Panel de Control de Pruebas</h3>
+                        <div class="table-actions">
+                            <div class="table-filter">
+                                <select id="test-module-select">
+                                    <option value="all">Todos los módulos</option>
+                                    <option value="dashboard">Dashboard</option>
+                                    <option value="requirements">Requerimientos</option>
+                                    <option value="purchaseOrders">Órdenes de Compra</option>
+                                    <option value="reception">Recepción</option>
+                                    <option value="inventory">Inventario</option>
+                                    <option value="outputs">Salidas</option>
+                                    <option value="suppliers">Proveedores</option>
+                                    <option value="accounting">Contabilidad</option>
+                                    <option value="reports">Reportes</option>
+                                </select>
+                            </div>
+                            <div class="inventory-buttons">
+                                <button class="btn btn-secondary" id="load-test-data-btn"><i class="fas fa-database"></i> Cargar Datos de Prueba</button>
+                                <button class="btn btn-primary" id="run-tests-btn"><i class="fas fa-play"></i> Ejecutar Pruebas</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="test-config">
+                            <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
+                                <div class="form-group">
+                                    <label>Tipo de Pruebas</label>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="test-functional" checked>
+                                        <label for="test-functional">Funcionales</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="test-integration" checked>
+                                        <label for="test-integration">Integración</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Opciones de Prueba</label>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="test-screenshots" checked>
+                                        <label for="test-screenshots">Capturar pantallas</label>
+                                    </div>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="test-verbose">
+                                        <label for="test-verbose">Registro detallado</label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Auto-corrección</label>
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="test-autofix" checked>
+                                        <label for="test-autofix">Sugerir correcciones</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="margin-top: 20px;">
+                            <div class="card-header">
+                                <h3>Resultados <span id="test-status-badge" class="badge-running" style="display: none;">Ejecutando...</span></h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="test-output" style="font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding: 10px; background-color: #f5f5f5; border-radius: 4px;">
+                                    Esperando ejecución de pruebas...
+                                </div>
+                                
+                                <div id="test-cases-container">
+                                    <!-- Test cases will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="script.js"></script>
+            <script src="test-framework.js"></script>
+            <script src="test-data-generator.js"></script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // ... existing code ...
+
+                    document.querySelectorAll('.alert-tab').forEach(tab => {
+                        tab.addEventListener('click', function() {
+                            const panelId = this.getAttribute('data-panel');
+                            
+                            document.querySelectorAll('.alert-tab').forEach(t => t.classList.remove('active'));
+                            document.querySelectorAll('.alert-panel').forEach(p => p.classList.remove('active'));
+                            
+                            this.classList.add('active');
+                            document.getElementById(panelId).classList.add('active');
+                        });
+                    });
+                });
+            </script>
+</body>
+</html>
